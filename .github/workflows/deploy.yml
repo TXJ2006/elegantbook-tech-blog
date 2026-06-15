@@ -29,8 +29,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
             latexmk \
+            biber \
             texlive-xetex \
             texlive-latex-extra \
+            texlive-bibtex-extra \
             texlive-lang-chinese \
             texlive-fonts-extra \
             texlive-fonts-recommended \
