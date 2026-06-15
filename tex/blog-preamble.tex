@@ -1,0 +1,63 @@
+\usepackage{fontspec}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable, listings, skins}
+
+\IfFontExistsTF{Microsoft YaHei}{
+  \setCJKmainfont{Microsoft YaHei}
+  \setCJKsansfont{Microsoft YaHei}
+  \setCJKmonofont{Microsoft YaHei UI}
+}{
+  \IfFontExistsTF{Noto Serif CJK SC}{
+    \setCJKmainfont{Noto Serif CJK SC}
+    \setCJKsansfont{Noto Sans CJK SC}
+    \setCJKmonofont{Noto Sans Mono CJK SC}
+  }{}
+}
+
+\definecolor{blogAccent}{HTML}{1F6F8B}
+\definecolor{blogInk}{HTML}{172026}
+\definecolor{blogCodeBg}{HTML}{F5F7F8}
+\definecolor{blogCodeBorder}{HTML}{D6E2E8}
+\definecolor{blogKeyword}{HTML}{B23A48}
+\definecolor{blogString}{HTML}{287D4F}
+\definecolor{blogComment}{HTML}{687783}
+
+\lstdefinestyle{blogcode}{
+  basicstyle=\ttfamily\small,
+  keywordstyle=\bfseries\color{blogKeyword},
+  stringstyle=\color{blogString},
+  commentstyle=\itshape\color{blogComment},
+  numberstyle=\scriptsize\color{blogComment},
+  numbers=left,
+  numbersep=8pt,
+  showstringspaces=false,
+  breaklines=true,
+  tabsize=2,
+  columns=fullflexible,
+  keepspaces=true
+}
+
+\newtcblisting{codeblock}[2][]{
+  listing only,
+  breakable,
+  enhanced,
+  colback=blogCodeBg,
+  colframe=blogCodeBorder,
+  arc=2mm,
+  boxrule=0.4pt,
+  left=6mm,
+  right=2mm,
+  top=1mm,
+  bottom=1mm,
+  listing options={style=blogcode, language=#2},
+  #1
+}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blogAccent,
+  urlcolor=blogAccent,
+  citecolor=blogAccent
+}
