@@ -33,7 +33,8 @@ function htmlEscape(value) {
 function readMeta(texPath) {
   const source = readFileSync(texPath, "utf8");
   const meta = {};
-  for (const line of source.split(/\r?\n/)) {
+  for (const rawLine of source.split(/\r?\n/)) {
+    const line = rawLine.replace(/^\uFEFF/, "");
     const match = line.match(/^%\s*blog-([a-z-]+):\s*(.+?)\s*$/i);
     if (match) meta[match[1]] = match[2];
   }
@@ -64,6 +65,23 @@ function compilePost(texPath, slug) {
     ], { cwd: root, stdio: "inherit", env });
   } catch {
     console.warn("latexmk failed; falling back to two xelatex passes.");
+    execFileSync("xelatex", [
+      "-interaction=nonstopmode",
+      "-halt-on-error",
+      `-output-directory=${outDir}`,
+      texPath,
+    ], { cwd: root, stdio: "inherit", env });
+    try {
+      execFileSync("biber", [
+        "--input-directory",
+        outDir,
+        "--output-directory",
+        outDir,
+        slug,
+      ], { cwd: root, stdio: "inherit", env });
+    } catch {
+      console.warn("biber failed or is unavailable; continuing without bibliography refresh.");
+    }
     for (let pass = 0; pass < 2; pass += 1) {
       execFileSync("xelatex", [
         "-interaction=nonstopmode",
