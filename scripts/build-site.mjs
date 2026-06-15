@@ -9,6 +9,14 @@ const buildDir = path.join(root, "build");
 const publicDir = path.join(root, "public");
 const pdfDir = path.join(publicDir, "pdf");
 const postPagesDir = path.join(publicDir, "posts");
+const site = {
+  name: "Tang's Machine Learning Blog",
+  eyebrow: "Research notes on machine learning, optimization, and reliable AI systems",
+  headline: "Tang's Machine Learning Blog",
+  description:
+    "A LaTeX-native research blog for machine learning notes, mathematical derivations, reproducible experiments, and carefully typeset code.",
+  repo: "https://github.com/TXJ2006/elegantbook-tech-blog",
+};
 
 function ensureDir(dir) {
   mkdirSync(dir, { recursive: true });
@@ -35,6 +43,7 @@ function readMeta(texPath) {
     title: meta.title ?? slug,
     date: meta.date ?? "",
     description: meta.description ?? "",
+    lang: meta.lang ?? "en",
   };
 }
 
@@ -73,17 +82,20 @@ function renderPostPage(post) {
   const dir = path.join(postPagesDir, post.slug);
   ensureDir(dir);
   writeFileSync(path.join(dir, "index.html"), `<!doctype html>
-<html lang="zh-CN">
+<html lang="${htmlEscape(post.lang)}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>${htmlEscape(post.title)}</title>
+  <title>${htmlEscape(post.title)} | ${htmlEscape(site.name)}</title>
   <link rel="stylesheet" href="../../site.css">
 </head>
 <body class="reader">
   <header class="topbar">
-    <a href="../../">Tech Notes</a>
-    <a href="../../pdf/${encodeURIComponent(post.slug)}.pdf">下载 PDF</a>
+    <a class="brand" href="../../">${htmlEscape(site.name)}</a>
+    <nav>
+      <a href="${site.repo}">GitHub</a>
+      <a href="../../pdf/${encodeURIComponent(post.slug)}.pdf">PDF</a>
+    </nav>
   </header>
   <main>
     <section class="post-head">
@@ -105,33 +117,33 @@ function renderIndex(posts) {
       <h2><a href="posts/${encodeURIComponent(post.slug)}/">${htmlEscape(post.title)}</a></h2>
       <p>${htmlEscape(post.description)}</p>
       <div class="actions">
-        <a href="posts/${encodeURIComponent(post.slug)}/">在线阅读</a>
-        <a href="pdf/${encodeURIComponent(post.slug)}.pdf">PDF</a>
+        <a href="posts/${encodeURIComponent(post.slug)}/">Read online</a>
+        <a href="pdf/${encodeURIComponent(post.slug)}.pdf">Open PDF</a>
       </div>
     </article>`).join("\n");
 
   writeFileSync(path.join(publicDir, "index.html"), `<!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tech Notes</title>
+  <title>${htmlEscape(site.name)}</title>
   <link rel="stylesheet" href="site.css">
 </head>
 <body>
   <header class="hero">
     <nav>
-      <strong>Tech Notes</strong>
-      <a href="https://github.com/">GitHub</a>
+      <strong>${htmlEscape(site.name)}</strong>
+      <a href="${site.repo}">GitHub</a>
     </nav>
     <div>
-      <p>LaTeX-first technical writing</p>
-      <h1>用 ElegantBook 写公开技术博客</h1>
-      <span>每篇文章用 LaTeX 编写，GitHub Actions 自动编译成 PDF，并发布到 GitHub Pages。</span>
+      <p>${htmlEscape(site.eyebrow)}</p>
+      <h1>${htmlEscape(site.headline)}</h1>
+      <span>${htmlEscape(site.description)}</span>
     </div>
   </header>
   <main class="content">
-    <section class="post-list">
+    <section class="post-list" aria-label="Published notes">
       ${items}
     </section>
   </main>
@@ -144,18 +156,18 @@ function renderCss() {
   writeFileSync(path.join(publicDir, "site.css"), `
 :root {
   color-scheme: light;
-  --ink: #172026;
-  --muted: #65717a;
-  --line: #d9e2e7;
-  --paper: #fbfcfb;
-  --accent: #1f6f8b;
-  --accent-dark: #14495d;
-  --wash: #eef5f3;
+  --ink: #171512;
+  --muted: #6a6259;
+  --line: #ded6cc;
+  --paper: #fbfaf7;
+  --accent: #7a3d25;
+  --accent-dark: #4f281a;
+  --wash: #f3efe8;
 }
 * { box-sizing: border-box; }
 body {
   margin: 0;
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: "Times New Roman", Times, serif;
   color: var(--ink);
   background: var(--paper);
 }
@@ -164,11 +176,11 @@ a { color: inherit; text-decoration: none; }
   min-height: 58vh;
   padding: 28px clamp(20px, 5vw, 72px) 56px;
   background:
-    linear-gradient(140deg, rgba(31,111,139,0.92), rgba(23,32,38,0.88)),
+    linear-gradient(135deg, rgba(39, 31, 25, 0.84), rgba(122, 61, 37, 0.68)),
     url("https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=1800&q=80");
   background-size: cover;
   background-position: center;
-  color: white;
+  color: #fffaf0;
   display: grid;
   grid-template-rows: auto 1fr;
 }
@@ -178,28 +190,42 @@ a { color: inherit; text-decoration: none; }
   align-items: center;
   gap: 18px;
 }
+.hero nav strong,
+.brand {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-style: italic;
+  font-weight: 500;
+}
 .hero nav a, .topbar a { border-bottom: 1px solid currentColor; }
+.topbar nav {
+  display: flex;
+  gap: 18px;
+}
 .hero div {
   align-self: end;
-  max-width: 860px;
+  max-width: 980px;
 }
 .hero p {
-  margin: 0 0 12px;
-  font-size: 0.86rem;
-  letter-spacing: 0;
-  text-transform: uppercase;
+  margin: 0 0 16px;
+  max-width: 760px;
+  font-size: 1rem;
+  line-height: 1.5;
 }
 .hero h1 {
-  margin: 0 0 18px;
-  font-size: clamp(2.3rem, 6vw, 5.8rem);
-  line-height: 1;
+  margin: 0 0 20px;
+  max-width: 1080px;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(3rem, 7.8vw, 8.2rem);
+  line-height: 0.93;
   letter-spacing: 0;
 }
 .hero span {
   display: block;
-  max-width: 760px;
-  font-size: clamp(1rem, 2vw, 1.24rem);
-  line-height: 1.7;
+  max-width: 820px;
+  font-size: clamp(1.06rem, 2vw, 1.3rem);
+  line-height: 1.65;
 }
 .content {
   width: min(1080px, calc(100% - 40px));
@@ -213,17 +239,20 @@ a { color: inherit; text-decoration: none; }
 .post-card {
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: white;
+  background: #fffdf8;
   padding: 22px;
 }
 .post-card time {
   color: var(--muted);
-  font-size: 0.88rem;
+  font-size: 0.92rem;
 }
 .post-card h2 {
   margin: 10px 0 12px;
-  font-size: 1.35rem;
-  line-height: 1.25;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 1.55rem;
+  line-height: 1.22;
 }
 .post-card p {
   min-height: 3.2em;
@@ -232,7 +261,7 @@ a { color: inherit; text-decoration: none; }
 }
 .actions {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   margin-top: 18px;
 }
 .actions a {
@@ -244,7 +273,7 @@ a { color: inherit; text-decoration: none; }
   top: 0;
   z-index: 2;
   padding: 14px clamp(16px, 4vw, 48px);
-  background: rgba(251,252,251,0.94);
+  background: rgba(251, 250, 247, 0.94);
   border-bottom: 1px solid var(--line);
   backdrop-filter: blur(12px);
 }
@@ -261,8 +290,11 @@ a { color: inherit; text-decoration: none; }
 }
 .post-head h1 {
   margin: 0 0 10px;
-  font-size: clamp(1.9rem, 4vw, 3.4rem);
-  line-height: 1.08;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(2.2rem, 5vw, 4.6rem);
+  line-height: 1.02;
 }
 .post-head span {
   color: var(--muted);
@@ -278,6 +310,7 @@ a { color: inherit; text-decoration: none; }
 }
 @media (max-width: 720px) {
   .hero { min-height: 62vh; }
+  .hero h1 { font-size: clamp(2.7rem, 16vw, 4.8rem); }
   .pdf-frame { height: 70vh; }
 }
 `, "utf8");

@@ -1,64 +1,67 @@
-# ElegantBook LaTeX 技术博客
+# Tang's Machine Learning Blog
 
-这是一个可以直接写 LaTeX、自动编译并发布到 GitHub Pages 的技术博客骨架。每篇文章放在 `posts/*.tex`，构建脚本会生成：
+This is a LaTeX-native machine learning blog based on ElegantBook. Write posts as standalone `.tex` files, push to GitHub, and GitHub Actions will compile and publish the site to GitHub Pages.
 
-- `public/index.html`：公开博客首页
-- `public/posts/<slug>/index.html`：每篇文章的在线 PDF 预览页
-- `public/pdf/<slug>.pdf`：ElegantBook 排版后的 PDF
+The build generates:
 
-## 本地写作
+- `public/index.html`: the public blog homepage
+- `public/posts/<slug>/index.html`: the online PDF reader page for each post
+- `public/pdf/<slug>.pdf`: the ElegantBook PDF for each post
 
-1. 复制示例文章：
+## Writing
 
-   ```powershell
-   Copy-Item posts/hello-elegantbook.tex posts/my-first-post.tex
-   ```
+Copy one of the templates:
 
-2. 修改文件顶部的元信息：
+```powershell
+Copy-Item templates/post-en.tex posts/my-first-note.tex
+Copy-Item templates/post-cn.tex posts/my-first-cn-note.tex
+```
 
-   ```tex
-   % blog-title: 文章标题
-   % blog-date: 2026-06-15
-   % blog-description: 首页展示的摘要
-   ```
+Update the post metadata:
 
-3. 编译并生成网站：
+```tex
+% blog-title: Your Post Title
+% blog-date: 2026-06-15
+% blog-description: A short abstract for the homepage.
+% blog-lang: en
+```
 
-   ```powershell
-   node scripts/build-site.mjs
-   ```
+Use English posts with:
 
-4. 打开 `public/index.html` 预览。
+```tex
+\documentclass[en,nofont,11pt]{elegantbook}
+```
 
-## GitHub Pages 部署
+Use Chinese posts with:
 
-1. 在 GitHub 新建一个仓库。
-2. 将本目录推送到仓库：
+```tex
+\documentclass[cn,nofont,11pt]{elegantbook}
+```
 
-   ```powershell
-   git init
-   git add .
-   git commit -m "Initial ElegantBook LaTeX blog"
-   git branch -M main
-   git remote add origin https://github.com/<your-name>/<your-repo>.git
-   git push -u origin main
-   ```
+Both templates load `tex/blog-preamble.tex`, which provides CJK font fallback, code highlighting, and shared link styling.
 
-3. 在 GitHub 仓库进入 `Settings -> Pages`，将 `Build and deployment` 的 Source 设为 `GitHub Actions`。
-4. 之后每次 push，`.github/workflows/deploy.yml` 会自动编译 LaTeX 并发布。
+## Local Build
 
-## 写作约定
+```powershell
+node scripts/build-site.mjs
+```
 
-- 文章必须是独立的 `.tex` 文件，放在 `posts/` 下。
-- 使用 `\input{tex/blog-preamble}` 加载中文字体、链接样式和代码高亮。
-- 推荐使用 `codeblock` 环境写代码：
+Open `public/index.html` to preview the generated site.
 
-  ```tex
-  \begin{codeblock}{Python}
-  print("hello")
-  \end{codeblock}
-  ```
+## Deployment
 
-## 与 Overleaf 接轨
+The repository is configured for GitHub Pages with GitHub Actions. Every push to `main` compiles all posts in `posts/` and deploys the generated site.
 
-本项目已经内置 `elegantbook.cls`，来自本机 MiKTeX 安装的 ElegantBook 4.7。你也可以把整个目录上传到 Overleaf，入口文件选择 `posts/hello-elegantbook.tex`，编译器选择 XeLaTeX。
+## Code Highlighting
+
+Use the `codeblock` environment:
+
+```tex
+\begin{codeblock}{Python}
+print("hello")
+\end{codeblock}
+```
+
+## Overleaf
+
+This project includes `elegantbook.cls` from ElegantBook 4.7. You can upload the repository to Overleaf, choose a post under `posts/` as the main file, and compile with XeLaTeX.

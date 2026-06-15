@@ -1,0 +1,42 @@
+% blog-title: 中文机器学习笔记标题
+% blog-date: 2026-06-15
+% blog-description: 这是一篇中文机器学习笔记模板，支持公式、中文排版和代码高亮。
+% blog-lang: zh-CN
+
+\documentclass[cn,nofont,11pt]{elegantbook}
+
+\title{中文机器学习笔记标题}
+\subtitle{一个可直接复制到 posts 目录的中文模板}
+\author{Tang}
+\institute{Tang's Machine Learning Blog}
+\date{2026-06-15}
+\version{0.1.0}
+\bioinfo{主题}{机器学习}
+
+\input{tex/blog-preamble}
+
+\begin{document}
+\maketitle
+\frontmatter
+\tableofcontents
+\mainmatter
+
+\chapter{中文写作示例}
+
+这个模板用于中文技术文章。复制到 \verb|posts/| 目录后，GitHub Actions 会自动编译并发布。
+
+\section{公式}
+
+\[
+  \min_{\theta} \frac{1}{n}\sum_{i=1}^{n}\ell(f_{\theta}(x_i), y_i)
+  + \lambda\|\theta\|_2^2.
+\]
+
+\section{代码}
+
+\begin{codeblock}{Python}
+def accuracy(y_true, y_pred):
+    return sum(a == b for a, b in zip(y_true, y_pred)) / len(y_true)
+\end{codeblock}
+
+\end{document}

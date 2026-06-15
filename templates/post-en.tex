@@ -1,0 +1,43 @@
+% blog-title: English Machine Learning Note
+% blog-date: 2026-06-15
+% blog-description: A reusable English post template for equations, experiments, and highlighted code.
+% blog-lang: en
+
+\documentclass[en,nofont,11pt]{elegantbook}
+
+\title{English Machine Learning Note}
+\subtitle{A reusable template for Tang's Machine Learning Blog}
+\author{Tang}
+\institute{Tang's Machine Learning Blog}
+\date{2026-06-15}
+\version{0.1.0}
+\bioinfo{Topic}{Machine Learning}
+
+\input{tex/blog-preamble}
+
+\begin{document}
+\maketitle
+\frontmatter
+\tableofcontents
+\mainmatter
+
+\chapter{Research Note}
+
+Write the main argument here. The build system compiles this post with XeLaTeX and publishes the generated PDF through GitHub Pages.
+
+\section{Equation}
+
+\[
+  \mathcal{L}(\theta)=\mathbb{E}_{(x,y)\sim \mathcal{D}}
+  \left[\ell(f_\theta(x), y)\right].
+\]
+
+\section{Code}
+
+\begin{codeblock}{Python}
+import torch
+
+loss = torch.nn.CrossEntropyLoss()
+\end{codeblock}
+
+\end{document}

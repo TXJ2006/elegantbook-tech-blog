@@ -1,4 +1,8 @@
 \usepackage{fontspec}
+\ifdefined\setCJKmainfont
+\else
+  \usepackage[UTF8,scheme=plain,fontset=none]{ctex}
+\fi
 \usepackage{xcolor}
 \usepackage{listings}
 \usepackage{tcolorbox}
