@@ -34,6 +34,7 @@ jobs:
             texlive-lang-chinese \
             texlive-fonts-extra \
             texlive-fonts-recommended \
+            fonts-texgyre \
             fonts-noto-cjk \
             fonts-noto-cjk-extra
 
