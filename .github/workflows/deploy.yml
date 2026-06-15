@@ -10,6 +10,9 @@ permissions:
   pages: write
   id-token: write
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 concurrency:
   group: pages
   cancel-in-progress: true
@@ -29,6 +32,7 @@ jobs:
             texlive-xetex \
             texlive-latex-extra \
             texlive-lang-chinese \
+            texlive-fonts-extra \
             texlive-fonts-recommended \
             fonts-noto-cjk \
             fonts-noto-cjk-extra
